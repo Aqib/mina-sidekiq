@@ -99,7 +99,7 @@ namespace :sidekiq do
     comment 'Quiet sidekiq (stop accepting new work)'
     case fetch(:init_system)
     when :systemd
-      command %{ systemctl reload #{ fetch(:service_unit_name) } }
+      command %{ sudo systemctl reload #{ fetch(:service_unit_name) } }
     when :upstart
       command %{ sudo service #{ fetch(:upstart_service_name) } reload }
     else
@@ -123,7 +123,7 @@ namespace :sidekiq do
     comment 'Stop sidekiq'
     case fetch(:init_system)
     when :systemd
-      command %{ systemctl stop #{ fetch(:service_unit_name) } }
+      command %{ sudo systemctl stop #{ fetch(:service_unit_name) } }
     when :upstart
       command %{ sudo service #{ fetch(:upstart_service_name) } stop }
     else
@@ -147,7 +147,7 @@ namespace :sidekiq do
     comment 'Start sidekiq'
     case fetch(:init_system)
     when :systemd
-      command %{ systemctl start #{ fetch(:service_unit_name) } }
+      command %{ sudo systemctl start #{ fetch(:service_unit_name) } }
     when :upstart
       command %{ sudo service #{ fetch(:upstart_service_name) } start }
     else
@@ -179,7 +179,7 @@ namespace :sidekiq do
   task :uninstall do
     case fetch(:init_system)
     when :systemd
-      command %{ systemctl disable #{fetch(:service_unit_name)} }
+      command %{ sudo systemctl disable #{fetch(:service_unit_name)} }
       command %{ rm #{File.join(fetch(:service_unit_path, fetch_systemd_unit_path),fetch(:service_unit_name))}  }
     end
   end
@@ -191,8 +191,8 @@ namespace :sidekiq do
     command %{ mkdir -p #{systemd_path} }
     command %{ touch #{service_path} }
     command %{ echo "#{ template }" > #{ service_path } }
-    command %{ systemctl daemon-reload }
-    command %{ systemctl enable #{ service_path } }
+    command %{ sudo systemctl daemon-reload }
+    command %{ sudo systemctl enable #{ service_path } }
   end
 
   def fetch_systemd_unit_path
