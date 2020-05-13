@@ -99,7 +99,7 @@ namespace :sidekiq do
     comment 'Quiet sidekiq (stop accepting new work)'
     case fetch(:init_system)
     when :systemd
-      command %{ sudo systemctl reload #{ fetch(:service_unit_name) } }
+      command %{ sudo systemctl restart #{ fetch(:service_unit_name) } }
     when :upstart
       command %{ sudo service #{ fetch(:upstart_service_name) } reload }
     else
